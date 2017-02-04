@@ -49,6 +49,9 @@ function update(){
             document.getElementById("pam").innerHTML = "Number of times: " + counter;
             balls[i].dx *= -1;
         }
+        else if(balls[i].x + balls[i].width < 0){
+            balls.shift();
+        }
     }
 }
 

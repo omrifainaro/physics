@@ -4,30 +4,30 @@ var ctx = c.getContext("2d");
 var WIDTH = 900;
 var HEIGHT = 600;
 var GRAVITY = 0.1;
+var SPEED = 2;
 
 var FLOOR = HEIGHT/2+200;
 var balls = [];
 
+var counter = 0;
+
 function Ball(x, y, width, height, color){
     this.x = x;
-    this.y = y;
+    this.y = FLOOR - height;
     this.width = width;
     this.height = height;
     this.color = color;
-    this.dx = 5;
-    this.dy = 0;
-    this.isMoving = true;
+    this.dx = SPEED;
 }
 
-
-// console.log(ball.x);
-// console.log(ball.y);
-
 function init(){
+    counter = 0;
+    document.getElementById("pam").innerHTML = "Number of times: " + counter;
+    balls = []
     var ball = new Ball(0, 0, 20, 20, "blue");
-    var ball2 = new Ball(100, 0, 20, 20, "red");
-    var ball3 = new Ball(200, 0, 20, 20, "black");
-    var ball4 = new Ball(300, 0, 20, 20, "white");
+    var ball2 = new Ball(200, 0, 20, 20, "red");
+    var ball3 = new Ball(400, 0, 20, 20, "black");
+    var ball4 = new Ball(600, 0, 20, 20, "white");
     balls.push(ball);
     balls.push(ball2);
     balls.push(ball3);
@@ -35,26 +35,21 @@ function init(){
 }
 
 function update(){
-    balls.forEach(function(b) {
-        b.x += b.dx;
-        b.y += b.dy;
-        //b.x = clamp(b.x, 0, WIDTH - b.width);
-        b.y = clamp(b.y, 0, (HEIGHT/2+200) - b.height);
-        b.dy += GRAVITY;
-        if(b.x - b.width >= WIDTH){
-            b.dx *= -1;
+    for(i = 0; i < balls.length; i++){
+        balls[i].x += balls[i].dx;
+        balls.forEach(function(b) {
+            if((balls[i].x > b.x) && 
+                (balls[i].x < b.x + b.width) ||
+                (balls[i].x + b.width > b.x) && 
+                (balls[i].x + b.width < b.x + b.width))
+                    balls[i].dx *= -1;
+        }, this);
+        if(balls[i].x + balls[i].width >= WIDTH){
+            counter++;
+            document.getElementById("pam").innerHTML = "Number of times: " + counter;
+            balls[i].dx *= -1;
         }
-        if(b.y + b.height >= FLOOR && b.isMoving){
-            b.dy *= -0.6;
-            if(b.dy >= -0.4 && b.dy <= 0.4){
-                b.dy = 0;
-                b.isMoving = false;
-            }
-        }
-        if(!b.isMoving){
-            
-        }
-    }, this);
+    }
 }
 
 function draw(){
